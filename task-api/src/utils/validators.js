@@ -5,15 +5,23 @@ const validateCreateTask = (body) => {
   if (!body.title || typeof body.title !== 'string' || body.title.trim() === '') {
     return 'title is required and must be a non-empty string';
   }
+
   if (body.status && !VALID_STATUSES.includes(body.status)) {
     return `status must be one of: ${VALID_STATUSES.join(', ')}`;
   }
+
   if (body.priority && !VALID_PRIORITIES.includes(body.priority)) {
     return `priority must be one of: ${VALID_PRIORITIES.join(', ')}`;
   }
+
   if (body.dueDate && isNaN(Date.parse(body.dueDate))) {
     return 'dueDate must be a valid ISO date string';
   }
+
+  // Ignore client values for these fields
+  body.createdAt = new Date().toISOString();
+  body.completedAt = null;
+
   return null;
 };
 
